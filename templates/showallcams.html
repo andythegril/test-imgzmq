@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>All Cameras</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <title>Video</title>
+    <style>
+        body {
+            color: white;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #375a7e;
+        }
+
+        header.feature-box.top {
+            background-color: #283442;
+            height: 100px;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #videoContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        video {
+            flex: 1 1 45%;
+            max-width: 45%;
+            border-radius: 8px;
+            height: auto;
+        }
+
+        @media (max-width: 600px) {
+            video {
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+    <header class="feature-box top">
+        <h1><strong>Check All CCTV</strong></h1>
+    </header>
+
+    <section>
+        <div id="videoContainer"
+        style="display: flex; flex-wrap: wrap;
+        gap: 20px; justify-content: center;
+        align-items: center; margin-top: 20px;"
+        >
+
+        </div>
+    </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetchCameraNames();
+});
+
+function fetchCameraNames() {
+    fetch('/camera_urls')
+        .then(response => response.json())
+        .then(cameraNames => {
+            const videoContainer = document.getElementById('videoContainer');
+
+            videoContainer.innerHTML = '';
+
+            cameraNames.forEach(cameraName => {
+                const img = document.createElement('img');
+                img.src = `/video_feed/${cameraName}?t=${new Date().getTime()}`;
+                img.alt = `Camera feed for ${cameraName}`;
+                img.style.width = '320px';
+                img.style.height = '240px';
+
+                videoContainer.appendChild(img);
+
+                setInterval(() => {
+                    img.src = `/video_feed/${cameraName}?t=${new Date().getTime()}`;
+                }, 1000);
+            });
+        })
+        .catch(error => console.error('Error fetching camera URLs:', error));
+}
+</script>
+
+
+    <div class="col-12">
+        <div align="center">
+            <p class="footer-description">©2024 RADS T7. All rights reserved.</p>
+        </div>
+    </div>
+
+</body>
+</html>
